@@ -55,7 +55,9 @@
       num2 = ReadNum2();
       num1_sum = addFactors(getFactors(num1));
       num2_sum = addFactors(getFactors(num2));
-      if (num1_sum == num2 && num2_sum == num1) {
+      if (num1 == num2) {
+        document.getElementById("amicable?").innerHTML = "Not Amicable!";
+      } else if (num1_sum == num2 && num2_sum == num1) {
         document.getElementById("amicable?").innerHTML = "Amicable!";
       } else {
         document.getElementById("amicable?").innerHTML = "Not Amicable!";
