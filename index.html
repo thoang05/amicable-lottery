@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Lucky for Life</title>
+  <script lang="javascript">
+////////////////////////////////////////////
+// ----- Get + Sort Lottery Numbers ----- //
+////////////////////////////////////////////
+    function getLottery(min, max) {
+     lotto = new Array();
+     lucky = Math.floor(Math.random() * (18)) + 1;
+     lotto[0] = Math.floor(Math.random() * (max - min + 1)) + min;
+      for (i = 1; i < 5; i++) {
+        match = Math.floor(Math.random() * (max - min + 1)) + min;
+        // Account for No repeats
+        for (j = 0; j < 5; j++) {
+          if (lotto[j] == match) {
+            do {
+              match = Math.floor(Math.random() * (max - min + 1)) + min;
+            } while (lotto[j] == match); 
+          }
+        }
+       lotto[i] = match;
+      }
+       lottery = lotto[0] + " " + lotto[1] + " " + lotto[2] + " " + lotto[3] + " " + lotto[4];
+    }
+
+    function sortLottery() {
+      lotto.sort((a, b) => a - b);
+      lotto[5] = lucky;
+      sorted_lotto = lotto[0] + " " + lotto[1] + " " + lotto[2] + " " + lotto[3] + " " + lotto[4];
+    }
+
+///////////////////////////////////////
+// ----- Validate User's Input ----- //
+///////////////////////////////////////
+  function validateNumbers() {
+    inputlotto = (document.getElementById("lottonum").value);
+    if (inputlotto == "") {
+      document.getElementById("lotto-error").innerHTML = "<span style=\"color:red\">" + "* Please fill in 5 lotto number" + "</span>";
+      return false;
+    }
+    inputlotto = inputlotto.replace(/^\s+|\s+$/g, '');
+    inputlotto = inputlotto.split(" ");
+    for (i = 0; i < inputlotto.length; i++) {
+      inputlotto[i] = parseInt(inputlotto[i]);
+      if (inputlotto[i] < 1 || inputlotto[i] > 48) {
+        document.getElementById("lotto-error").innerHTML = "<span style=\"color:red\">" + "* Lotto numbers must be between 1 to 48 " + "</span>";
+        return false;
+      } else if (isNaN(inputlotto[i])) {
+        document.getElementById("lotto-error").innerHTML = "<span style=\"color:red\">" + "* Invalid character, please use numbers" + "</span>";
+      return false;
+      }
+    }
+    if (inputlotto.length < 5) {
+      document.getElementById("lotto-error").innerHTML = "<span style=\"color:red\">" + "* Please add " + (5-inputlotto.length) + " more number[s]" + "</span>";
+      return false;
+    } else if (inputlotto.length > 5) {
+      document.getElementById("lotto-error").innerHTML = "<span style=\"color:red\">" + "* Please remove " + (inputlotto.length-5) + " number[s]" + "</span>";
+      return false;
+    }
+    return true;
+  }
+
+  function validateLucky() {
+    inputlucky = document.getElementById("luckynum").value;
+    if (inputlucky == "") {
+      document.getElementById("lucky-error").innerHTML = "<span style=\"color:red\">" + "* Please fill in lucky number" + "</span>";
+      return false; 
+    }
+    inputlucky = parseInt(inputlucky);
+    if (inputlucky < 1 || inputlucky > 18) {
+      document.getElementById("lucky-error").innerHTML = "<span style=\"color:red\">" + "* Lucky number must be between 1 and 18" + "</span>";
+      return false;
+    } else if (isNaN(inputlucky)) {
+      document.getElementById("lucky-error").innerHTML = "<span style=\"color:red\">" + "* Invalid character, please use numbers" + "</span>";
+      return false;
+    }
+    return true;
+  }
+
+    function validateInput() {
+      if (!validateNumbers()) {
+        if (!validateLucky()) {
+          return false;
+        } else if (validateLucky()) {
+          return false;
+        }
+      }
+      if (!validateLucky()) {
+        if (!validateNumbers()) {
+          return false;
+        } else if (validateNumbers()) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+////////////////////////////////////////////
+// ----- Comparing Input to Lottery ----- //
+////////////////////////////////////////////
+    function compare() {
+      if (validateInput()) {
+        num_match = 0, lucky_match = 0;
+        inputlotto[5] = inputlucky;
+        for (i=0; i < 5; i++) {
+          for (j=0; j < 5; j++) {
+            if (inputlotto[i] == lotto[j]) {
+              num_match++;
+            }
+          }
+        }
+        if (lotto[5] == inputlotto[5]) {
+          lucky_match++;
+        }
+        payout();
+      }
+    }
+      
+//////////////////////////////////////
+// ----- Print out the Prizes ----- //
+//////////////////////////////////////
+    function payout() {
+      if (num_match == 5) {
+        if (lucky_match == 1) {
+          document.getElementById("prize").innerHTML = "Payout: $7,000 a WEEK for LIFE!";
+        } else {
+          document.getElementById("prize").innerHTML = "Payout: $25,000 a YEAR for LIFE!";
+        }
+      } else if (num_match == 4) {
+          if (lucky_match == 1) {
+            document.getElementById("prize").innerHTML = "Payout: $5,000";
+          } else {
+            document.getElementById("prize").innerHTML = "Payout: $250";
+          }
+      } else if (num_match == 3) {
+          if (lucky_match == 1) {
+            document.getElementById("prize").innerHTML = "Payout: $150";
+          } else {
+          document.getElementById("prize").innerHTML = "Payout: $20";
+          }
+      } else if (num_match == 2) {
+          if (lucky_match == 1) {
+            document.getElementById("prize").innerHTML = "Payout: $25";
+          } else {
+          document.getElementById("prize").innerHTML = "Payout: $3";
+          }
+      } else if (lucky_match == 1) {
+          if (num_match == 1) {
+            document.getElementById("prize").innerHTML = "Payout: $6";
+          } else {
+          document.getElementById("prize").innerHTML = "Payout: $4";
+          }
+      } else {
+        document.getElementById("prize").innerHTML = "Payout: $0";
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <h1>Mass Lottery: Lucky for Life</h1>
+  <button onclick="displayLottery()">Get Lottery Numbers</button>
+  <p id="random" style="word-spacing: 1em;"></p>
+  <p>Here's The Lottery Numbers Sorted:</p>
+  <p id="sorted" style="word-spacing: 1em;"></p>
+
+  <form id="input_form">
+    <h3>Generate Numbers First Before Entering Your Numbers!</h3>
+    Enter 5 Lottery Numbers:<br><span>Between 1 to 48 with a space between each number<br><span style="font-style: italic;">Ex: 13 3 46 28 17</span></span> (No Duplicates)<br>
+    <input type="text" id="lottonum" name="lottonum" value="" ><span id="lotto-error" style="padding-left: 1em;"></span><br><br>
+    Enter Lucky Ball Number:<br><span>Between 1 to 18</span><br>
+    <input type="text" id="luckynum" name="luckynum" value="" onblur="this.value=removeSpaces(this.value);"><span id="lucky-error" style="padding-left: 1em;"></span><br><br>
+    <input type="button" id="inputs" value="Compare" onclick="errorreset(); compare()"><br>
+  </form>
+
+  <h1 id="prize" style="padding-bottom: 1em;"></h1>
+
+  <script lang="javascript">
+    function displayLottery() {
+      getLottery(1,48);
+      document.getElementById("random").innerHTML = lottery + " " + "<span style=\"color:red\">" + lucky + "</span>";
+      sortLottery();
+      document.getElementById("sorted").innerHTML = sorted_lotto + " " + "<span style=\"color:red\">" + lucky + "</span>";
+      document.getElementById("input_form").reset();
+      document.getElementById("prize").innerHTML=null;
+    }
+
+    function removeSpaces(string) {
+      return string.split(' ').join('');
+    }
+
+    function errorreset() {
+      document.getElementById("lotto-error").innerHTML=null;
+      document.getElementById("lucky-error").innerHTML=null;
+    }
+  </script>
+
+  <a href="amicable.html">Part 2</a>
+</body>
+</html>

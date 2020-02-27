@@ -1,0 +1,19 @@
+* {
+  padding: 0;
+  box-sizing: border-box;
+}
+
+form {
+  margin-top: 3em;
+  border: 1px solid black;
+  padding: 0.5em;
+}
+
+form span {
+  font-size: 15px;
+  font-weight: lighter;
+}
+
+div button {
+  margin-right: 1em;
+}
